@@ -10,7 +10,7 @@ const Editor = () => {
   const editorRef = useRef(null);
 
   function onChangeHandle(e) {
-    console.log(editorRef.current.innerHTML);
+    // console.log(editorRef.current.innerHTML);
     setComment(editorRef.current.innerHTML);
   }
 

@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
+import AuthContext from "../context/AuthContext";
 
-function useFetch(url, method = 'get', body = null) {
+function useFetch(url, method = "get", body = null) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
+  const { accessToken, setAccessToken } = useContext(AuthContext);
 
   const effectRun = useRef(false); // fixing strange double running useEffect
 
@@ -16,17 +18,18 @@ function useFetch(url, method = 'get', body = null) {
 
     const source = axios.CancelToken.source();
 
-    if(effectRun.current) {
+    if (effectRun.current) {
       axios[method](url, { data: body || undefined, cancelToken: source.token })
+        // axios[method](url, { data: body || undefined, cancelToken: source.token })
         .then((res) => {
-          if(isMounted) {
+          if (isMounted) {
             res.data && setData(res.data);
-            setLoading(false)
+            setLoading(false);
           }
         })
         .catch((err) => {
           setError(err);
-        })
+        });
     }
     return () => {
       isMounted = false;

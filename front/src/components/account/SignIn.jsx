@@ -1,8 +1,28 @@
+import { useContext, useState } from "react";
+import useFetch from "../../hooks/useFetch";
+import axios from "axios";
+import AuthContext from "../../context/AuthContext";
+
 const SignIn = ({ closeHandle, signToggle }) => {
-  function submitHandle(e) {
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
+
+  const { authed, setAuthed, setAccessToken } = useContext(AuthContext);
+
+  async function submitHandle(e) {
     e.preventDefault();
 
-    console.log("submit");
+    const { data, loading, error } = await axios.post("/api/signin", {
+      usernameOrEmail,
+    });
+
+    if (data && !loading && !error) {
+      const { user, accessToken } = data;
+      setAuthed(user.username);
+      setAccessToken(accessToken);
+      closeHandle()
+    }
+
+    console.log(data, loading, error);
   }
 
   return (
@@ -15,8 +35,12 @@ const SignIn = ({ closeHandle, signToggle }) => {
       </div>
       <div className="modal-body">
         <form onSubmit={submitHandle}>
-          <label htmlFor="username">username</label>
-          <input id="username" />
+          <label htmlFor="usernameoremail">username or email</label>
+          <input
+            id="usernameoremail"
+            value={usernameOrEmail}
+            onChange={(e) => setUsernameOrEmail(e.target.value)}
+          />
           <button type="submit">submit</button>
         </form>
       </div>

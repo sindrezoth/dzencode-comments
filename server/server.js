@@ -1,42 +1,56 @@
 require("dotenv").config();
 
-const os = require("os"); // for getting ip addres to log when start app :)
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors"); // access for limited sources
 const cookieParser = require("cookie-parser"); // cookies processing
 
 const commentsRoutes = require("./routes/commentsRoutes"); // routes
+const authRoutes = require("./routes/authRoutes");
+const signRoutes = require("./routes/signRoutes");
 
 const authMiddleware = require("./middleware/authMiddleware"); // middlewares
 const logMiddleware = require("./middleware/logMiddlware"); // logging
+const requestLogMiddleware = require("./middleware/requestLogMiddleware");
 
-const providedIp = os.networkInterfaces()["wlp1s0"][0].address; // get ip provided by router
 const PORT = process.env.PORT || 3000; // define port
 
 const endpoints = ["/", "/comments"]; // endpoints list
 
 const app = express(); // main app
 
-const corsOptions = {
-  origin: ["http://localhost:5173", "http://192.168.0.151:5173"],
-};
-app.use(cors());
-
+app.use(express.json());
 app.use(cookieParser());
+
+const corsOptions = {
+  origin: [
+    "https://stafeelacock.local",
+    // "http://localhost:5173",
+    // "http://192.168.0.151:5173",
+    // "http://192.168.0.7:5173",
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
+  allowedHeaders: ["Content-Type", "authorization"],
+};
+app.use(cors(corsOptions));
+
+app.use(requestLogMiddleware);
+
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the backend!" });
 });
 
-app.use(authMiddleware);
+app.use("/auth", authRoutes);
+
+// app.use(authMiddleware);
+app.use("/", signRoutes);
 app.use("/comments", commentsRoutes);
 
 app.use(logMiddleware);
 
-app.listen(PORT, () => {
+// app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, "127.0.0.1", () => {
   console.log("listen on:", PORT);
-  console.log("url:", `http://${providedIp}:${PORT}`);
-  console.log("endpoints: ");
-  endpoints.forEach((e) => {
-    console.log(`http://${providedIp}:${PORT}${e}`);
-  });
+  console.log(endpoints);
 });
