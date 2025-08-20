@@ -3,12 +3,12 @@ const router = express.Router();
 const {
   getComments,
   getComment,
-  postComment
-} = require('../controllers/commentsController');
-
+  postComment,
+} = require("../controllers/commentsController");
 
 router
   .get("/", getComments)
+  .get("/random", getComment)
   .get("/:commentId", getComment)
   .post("/", postComment);
 

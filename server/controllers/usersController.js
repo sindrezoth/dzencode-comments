@@ -16,24 +16,19 @@ const getUsers = async (req, res) => {
   res.json({ ...response, users });
 };
 
-const getUser = (req, res) => {
-  const { userId } = req.query;
+const getUser = async (req, res) => {
+  const { userId } = req.params;
 
-  const response = {
-    message: `get user with userId: ${userId}`,
-    authed: !!req.auth,
-  };
+  // if (!userId) {
+  //   res.status(400).json({ message: "Bad request." });
+  // }
 
-  if (!userId) {
-    res.status(400).json({ message: "Bad request." });
-  }
+  const user = await getUserService(userId);
 
-  const user = getUserService(userId);
   if (!user) {
     res.status(404).json({ message: "Not found." });
   }
   res.json({
-    ...response,
     user,
   });
 };

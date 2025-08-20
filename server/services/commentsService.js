@@ -1,46 +1,47 @@
 // import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 const db = require("../db/dbConn");
 
-const comments = [
-  {
-    commentId: 1,
-    comment: "hey",
-    user: "yo",
-  },
-  {
-    commentId: 2,
-    comment: "hay",
-    user: "no",
-  },
-  {
-    commentId: 3,
-    comment: "hue",
-    user: "yep",
-  },
-];
-
 const getCommentsService = async (commentIds) => {
   const [rows] = await db.query(
-    "SELECT c.text as text, u.username as username FROM comments c JOIN users u WHERE u.id = c.user_id",
+    "SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c JOIN users u WHERE u.id = c.user_id AND c.reply_to IS NOT NULL",
   );
-  const result = rows[0];
+  const result = rows;
 
-  // return comments;
   return result;
 };
 
 const getCommentService = async (commentId) => {
-  const [rows] = await db.query(
-    `SELECT t.name, t.description_short, t.description_long FROM topics t where t.name = '${commentId}'`,
-  );
-  const result = rows[0];
+  let result;
+  console.log(commentId);
+  if (commentId) {
+    const [rows] = await db.query(
+      `SELECT c.id as commentId, c.text as text, u.username as username FROM comments c JOIN users u WHERE c.id = '${commentId}'`,
+    );
+    result = rows[0];
+  } else {
+    console.log('here!')
+    const [rows] = await db.query(
+      "SELECT c.id as commentId, c.text as text, u.username as username FROM comments c JOIN users u WHERE u.id = c.user_id ORDER BY RAND() LIMIT 1",
+    );
+    result = rows[0];
+  }
 
   return result;
 };
 
 const postCommentService = async (comment) => {
+  const valueNamesList = {
+    userId: "user_id",
+    text: "text",
+    replyTo: "reply_to",
+    qutoeStart: "quote_start",
+    qutoeEnd: "quote_end",
+    attachedFilePath: "attached_file_path",
+    createdAt: "created_at",
+  };
+
   const res = await db.query(
-    `SELECT * FROM quizzes WHERE name_id = '${comment.id}'`,
+    `INSERT INTO comments (${valueNames.map((v) => `${v}`).join(", ")}) VALUES (${values.map((v) => `'${v}'`).join(", ")})`,
   );
   const result = res[0];
 

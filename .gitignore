@@ -3,4 +3,6 @@
 .env.production
 .env.*
 
+logs
+
 node_modules

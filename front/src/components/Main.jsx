@@ -6,6 +6,7 @@ import { useContext, useEffect } from "react";
 import ModalSignContext from "../context/ModalSignContext";
 import AuthContext from "../context/AuthContext";
 import CommentsTable from "./CommentsTable";
+import CommentPage from "./CommentPage";
 
 const Main = () => {
   const { authed } = useContext(AuthContext);
@@ -13,7 +14,8 @@ const Main = () => {
 
   return (
     <main>
-      <CommentsTable />
+      <CommentPage />
+      {/* <CommentsTable /> */}
       {/* <CommentsList /> */}
       {/* <NewCommentForm /> */}
     </main>

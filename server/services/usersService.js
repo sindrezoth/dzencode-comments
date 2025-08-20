@@ -12,10 +12,20 @@ const getUsersService = async (userIds) => {
 };
 
 const getUserService = async (userId) => {
-  const [rows] = await db.query(
-    `SELECT u.username as username, u.email as email, u.id as userId FROM users u WHERE u.id = ${userId}`,
-  );
-  const result = rows[0];
+  let result;
+  if(!userId) {
+    const [rows] = await db.query(
+      `SELECT u.username as username, u.email as email, u.id as userId FROM users u ORDER BY RAND() LIMIT 1`,
+    );
+
+    result = rows[0];
+  }
+  else {
+    const [rows] = await db.query(
+      `SELECT u.username as username, u.email as email, u.id as userId FROM users u WHERE u.id = ${userId}`,
+    );
+    result = rows[0]
+  }
 
   return result;
 };

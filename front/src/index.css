@@ -180,7 +180,7 @@ button:focus-visible {
 }
 
 .table-wrapper {
-  width: 100%;
+  width: 80%;
   overflow-x: scroll;
   display: grid;
   align-items: center;
@@ -190,7 +190,7 @@ button:focus-visible {
 
 .table-wrapper table {
   font-size: calc(1em + 0.3vw);
-  width: fit-content;
+  width: 100%;
   border-collapse: collapse;
 }
 
@@ -221,6 +221,29 @@ button:focus-visible {
 
 .table-wrapper table tbody tr:nth-child(odd) {
   background-color: #fff4;
+}
+
+.table-controls {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 1em 0;
+}
+
+.table-numbers-pages {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 1em;
+}
+
+.table-numbers-group {
+  display: flex;
+  gap: 0.5em;
+}
+
+.table-numbers-group button {
+  /* font-size: 0.7em; */
+  /* size: calc(2 + 9vw); */
 }
 
 .comments-list {
