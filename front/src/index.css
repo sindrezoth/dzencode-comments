@@ -102,7 +102,7 @@ a:hover {
 }
 
 h1 {
-  font-size: 2.7em;
+  font-size: calc(1.7em + 1vw);
   line-height: 1.1;
 }
 
@@ -126,6 +126,13 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.auth-btns {
+  scale: 0.8;
+  position: fixed;
+  top: 0.7em;
+  right: 0.2em;
 }
 
 .card {
@@ -172,6 +179,83 @@ button:focus-visible {
   padding: 0.2em 0.5em;
 }
 
+.table-wrapper {
+  width: 100%;
+  overflow-x: scroll;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  padding: 1em;
+}
+
+.table-wrapper table {
+  font-size: calc(1em + 0.3vw);
+  width: fit-content;
+  border-collapse: collapse;
+}
+
+.table-wrapper thead {
+  background-color: #fff6;
+}
+
+.table-wrapper th, td {
+  padding: 0.5em;
+  text-wrap: nowrap;
+}
+
+.table-wrapper table tbody tr{
+  scale: 1;
+  transition: scale 0.1s
+}
+
+.table-wrapper table tbody tr:hover,
+.table-wrapper table tbody tr:focus, 
+.table-wrapper table tbody tr:target {
+  cursor: pointer;
+  scale: 1.02;
+}
+
+.table-wrapper table tbody tr:nth-child(even) {
+  background-color: #fff2;
+}
+
+.table-wrapper table tbody tr:nth-child(odd) {
+  background-color: #fff4;
+}
+
+.comments-list {
+  font-size: 1.1em;
+  list-style: none;
+  max-width: 100%;
+}
+
+.comments-list li {
+  width: 500px;
+  max-width: 100%;
+  margin-bottom: 1em;
+}
+
+.comment-wrapper {
+  width: 100%;
+  background-color: red;
+  border: 1px solid #0004;
+}
+
+.comment-header {
+  background-color: brown;
+  padding: 0.5em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.comment-user-info {
+}
+
+.comment-text-content {
+  padding: 1em;
+}
+
+
 .modal {
   display: none;
   position: fixed;
@@ -191,6 +275,7 @@ button:focus-visible {
   top: 50%;
   translate: 0 -80%;
   width: 600px;
+  max-width: 100%;
   margin: auto;
   padding: 0;
   background-color: var(--bg-dark-2);
@@ -246,3 +331,4 @@ button:focus-visible {
     opacity: 1;
   }
 }
+

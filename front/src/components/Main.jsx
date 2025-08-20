@@ -5,6 +5,7 @@ import useFetch from "../hooks/useFetch";
 import { useContext, useEffect } from "react";
 import ModalSignContext from "../context/ModalSignContext";
 import AuthContext from "../context/AuthContext";
+import CommentsTable from "./CommentsTable";
 
 const Main = () => {
   const { authed } = useContext(AuthContext);
@@ -12,22 +13,7 @@ const Main = () => {
 
   return (
     <main>
-      {
-        !authed && 
-          <>
-
-            <button onClick={openSignUp}>
-              SignUp
-            </button>
-            <button onClick={openSignIn}>
-              SignIn
-            </button>
-          </>
-      }
-      {/* <Login /> */}
-      {/* <DialogForm header="Увійти в акаунт" footer="або зареєструйся"> */}
-      {/*   <h1>HEEELLOOO</h1> */}
-      {/*   <h2>hey</h2> */}
+      <CommentsTable />
       {/* <CommentsList /> */}
       {/* <NewCommentForm /> */}
     </main>

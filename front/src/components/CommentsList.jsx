@@ -5,7 +5,7 @@ const CommentsList = () => {
   const [comments, setComments] = useState([1,2,3,4]);
 
   return (
-    <ul>
+    <ul className="comments-list">
       {
         comments.map((comment, i) => 
           <li key={i}>

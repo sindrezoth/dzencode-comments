@@ -8,14 +8,16 @@ const Header = () => {
   return (
     <header>
       <h1>Comments!</h1>
-      {
-        !authed && 
-        <button onClick={openSignIn}>SignIn</button>
-      }
-      {
-        authed && 
-        <button onClick={logout}>Logout</button>
-      }
+      <div className="auth-btns">
+        {
+          !authed && 
+          <button onClick={openSignIn}>Увійти</button>
+        }
+        {
+          authed && 
+          <button onClick={logout}>Вийти</button>
+        }
+      </div>
     </header>
   );
 };
