@@ -1,43 +1,47 @@
 // import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 const db = require("../db/dbConn");
 
-const getUsersService = async (userIds) => {
-  const [rows] = await db.query(
-    "SELECT u.username as username, u.email as email FROM users u",
-  );
-  const result = rows[0];
+const toDBfields = {
+  id: 'id',
+  username: 'username',
+  email: 'email',
+  homepage: 'homepage',
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
+};
 
-  // return users;
+const getUsersService = async (userIds, fields = ['id', 'username', 'email', 'homepage', 'createAt', 'updateAt']) => {
+  const fieldsQuery = fields.map((f) => `u.${toDBfields[f]} as ${f}`).join(', ');
+
+  let query = `SELECT ${fieldsQuery} FROM users u`;
+
+  if(userIds && userIds.length) {
+    query += ` WHERE u.id IN (${userIds.map(id => id).join(', ')})`;
+  }
+
+  console.log(query);
+
+  const [rows] = await db.query(query);
+  const result = rows;
+
   return result;
 };
 
-const getUserService = async (userId) => {
-  let result;
-  if(!userId) {
-    const [rows] = await db.query(
-      `SELECT u.username as username, u.email as email, u.id as userId FROM users u ORDER BY RAND() LIMIT 1`,
-    );
+const getUserService = async (userId, fields = ['id', 'username', 'email', 'homepage', 'createdAt', 'updatedAt']) => {
+  const fieldsQuery = fields.map((f) => `u.${toDBfields[f]} as ${f}`).join(', ');
 
-    result = rows[0];
+  let query = `SELECT ${fieldsQuery}, c.id as commentId FROM users u JOIN comments c`;
+
+  if(!userId) {
+    query = `WITH user as (SELECT u.id as id FROM users u ORDER BY RAND() LIMIT 1) ${query} WHERE u.id in (SELECT id FROM user) AND u.id = c.user_id`
   }
   else {
-    const [rows] = await db.query(
-      `SELECT u.username as username, u.email as email, u.id as userId FROM users u WHERE u.id = ${userId}`,
-    );
-    result = rows[0]
+    query += ` WHERE u.id = ${userId} AND c.user_id = u.id`
   }
 
-  return result;
-};
+  const [rows] = await db.query(query);
 
-const getUserByCredService = async (user) => {
-  const [rows] = await db.query(
-    `SELECT u.username as username, u.email as email, u.id as userId FROM users u WHERE u.username = '${user}' OR u.email = '${user}'`,
-  );
-
-  const result = rows[0];
-
-  return result;
+  return rows;
 };
 
 const postUserService = async (user) => {
@@ -95,5 +99,4 @@ module.exports = {
   getUsersService,
   getUserService,
   postUserService,
-  getUserByCredService,
 };

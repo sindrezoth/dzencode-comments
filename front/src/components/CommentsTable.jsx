@@ -37,10 +37,10 @@ const CommentsTable = () => {
     async function getAll () {
       const res = await axios.get("/api/comments");
       if(res.data) {
-        setComments(res.data.comments);
+        setComments(res.data);
         setPage({
           current: 1,
-          total: Math.ceil(res.data.comments.length / entitiesPerPage)
+          total: Math.ceil(res.data.length / entitiesPerPage)
         });
       }
     }

@@ -1,61 +1,68 @@
-// import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 const db = require("../db/dbConn");
 
-const getCommentsService = async (commentIds) => {
-  const [rows] = await db.query(
-    "SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c JOIN users u WHERE u.id = c.user_id AND c.reply_to IS NOT NULL",
-  );
-  const result = rows;
+const toDBfields = {
+  userId: "user_id",
+  text: "text",
+  replyTo: "reply_to",
+  qutoeStart: "quote_start",
+  qutoeEnd: "quote_end",
+  attachedFilePath: "attached_file_path",
+  createdAt: "created_at",
+};
 
-  return result;
+
+const getCommentsService = async (commentIds) => {
+  let query = "SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c JOIN users u WHERE u.id = c.user_id AND c.reply_to IS NOT NULL";
+
+  if(commentIds && commentIds.length) {
+    query += ` AND c.id IN (${commentIds.map(id => `${id}`).join(', ')})`;
+  }
+
+  const [rows] = await db.query(query);
+
+  return rows;
 };
 
 const getCommentService = async (commentId) => {
-  let result;
-  console.log(commentId);
+  let query = `SELECT 
+u.id as userId, 
+u.username as username, 
+c.id as commentId, 
+c.text as text, 
+c.reply_to as replyTo, 
+c.created_at as createdAt, 
+c.updated_at as updatedAt,
+cc.id as replyId
+FROM comments c 
+JOIN users u ON u.id = c.user_id
+LEFT JOIN comments cc ON cc.reply_to = c.id
+`;
+
   if (commentId) {
-    const [rows] = await db.query(
-      `SELECT c.id as commentId, c.text as text, u.username as username FROM comments c JOIN users u WHERE c.id = '${commentId}'`,
-    );
-    result = rows[0];
+    console.log(commentId)
+    query = `${query} WHERE c.id = ${commentId}`;
   } else {
-    console.log('here!')
-    const [rows] = await db.query(
-      "SELECT c.id as commentId, c.text as text, u.username as username FROM comments c JOIN users u WHERE u.id = c.user_id ORDER BY RAND() LIMIT 1",
-    );
-    result = rows[0];
+    // query += " WHERE u.id = c.user_id ORDER BY RAND() LIMIT 1";
   }
 
-  return result;
+  const [rows] = await db.query(query);
+
+  return rows;
 };
 
 const postCommentService = async (comment) => {
-  const valueNamesList = {
-    userId: "user_id",
-    text: "text",
-    replyTo: "reply_to",
-    qutoeStart: "quote_start",
-    qutoeEnd: "quote_end",
-    attachedFilePath: "attached_file_path",
-    createdAt: "created_at",
-  };
+  let result;
 
   const res = await db.query(
     `INSERT INTO comments (${valueNames.map((v) => `${v}`).join(", ")}) VALUES (${values.map((v) => `'${v}'`).join(", ")})`,
   );
-  const result = res[0];
+
+  result = res[0];
 
   return result;
 };
 
-const addNewQuiz = async (quiz) => {
-  if (
-    !quiz ||
-    !quiz.questions.length ||
-    quiz.questions.some((q) => !q.answers.length)
-  )
-    return new Error("Bad request");
-
+const addComments = async (comments) => {
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();

@@ -8,8 +8,8 @@ const {
 
 router
   .get("/", getUsers)
-  .get("/:userId", getUser)
   .get("/random", getUser)
+  .get("/:userId", getUser)
   .post("/", postUser);
 
 module.exports = router;

@@ -15,6 +15,7 @@
   --color-dark: #1a1a1a;
 
   color: light-dark(var(--color-dark), var(--color-light));
+  background-attachment: fixed;
   background-image: linear-gradient(110deg,
       light-dark(var(--bg-light-1), var(--bg-dark-1)) 0%,
       light-dark(var(--bg-light-2), var(--bg-dark-2)) 50%,
@@ -256,6 +257,37 @@ button:focus-visible {
   width: 500px;
   max-width: 100%;
   margin-bottom: 1em;
+}
+
+.comment-page {
+  font-size: 1.2em;
+  max-width: 800px;
+
+}
+
+.comment-page-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff5;
+  padding: 0.5em 1em;
+}
+
+.comment-page-body {
+  background-color: #fff2;
+  padding: 1em;
+  text-align: left;
+}
+
+.comment-page-reply-list {
+  padding-left: 3em;
+}
+
+.comment-page-reply-list ul {
+  list-style: none;
+}
+
+.comment-page-reply {
+  /* background-color: #fff7; */
 }
 
 .comment-wrapper {
