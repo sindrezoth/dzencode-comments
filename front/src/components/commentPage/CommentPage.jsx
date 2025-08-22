@@ -2,20 +2,20 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReplyList from "./ReplyList";
 import CommentBlock from "./CommentBlock";
+import { useParams } from "react-router";
 
-const CommentPage = ({ commentId }) => {
+const CommentPage = () => {
   const [comment, setComment] = useState(null);
   const [replyList, setReplyList] = useState([]);
+  const { id: commentId } = useParams();
 
   async function getComment(id) {
     let result = await axios.get(`/api/comments/${id}`);
 
     if (result.data) {
       setComment(result.data);
-      console.log(result.data);
     }
 
-    console.log(result.data.replyIds[0])
     if(result.data.replyIds[0]) {
       result = await axios.get(
         `/api/comments?commentsIds=${result.data.replyIds.join(",")}`,
@@ -32,14 +32,17 @@ const CommentPage = ({ commentId }) => {
 
   useEffect(() => {
     getComment(commentId);
-  }, []);
+  }, [commentId]);
 
   return (
     <div className="comment-page">
       {comment ? (
         <>
           <CommentBlock comment={comment} />
-          <ReplyList getComment={getComment} replyList={replyList} />
+          {
+            !!replyList.length &&
+              <ReplyList replyList={replyList} />
+          }
         </>
       ) : (
         <p>Loading...</p>

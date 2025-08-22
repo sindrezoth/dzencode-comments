@@ -94,12 +94,12 @@ form>button {
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: light-dark(#000, #fff);
   text-decoration: inherit;
 }
 
 a:hover {
-  color: #535bf2;
+  color: light-dark(var(--bg-dark-2), var(--bg-light-2));
 }
 
 h1 {
@@ -131,7 +131,7 @@ button:focus-visible {
 
 .auth-btns {
   scale: 0.8;
-  position: fixed;
+  position: absolute;
   top: 0.7em;
   right: 0.2em;
 }
@@ -181,7 +181,7 @@ button:focus-visible {
 }
 
 .table-wrapper {
-  width: 80%;
+  width: 100%;
   overflow-x: scroll;
   display: grid;
   align-items: center;
@@ -199,18 +199,19 @@ button:focus-visible {
   background-color: #fff6;
 }
 
-.table-wrapper th, td {
+.table-wrapper th,
+td {
   padding: 0.5em;
   text-wrap: nowrap;
 }
 
-.table-wrapper table tbody tr{
+.table-wrapper table tbody tr {
   scale: 1;
-  transition: scale 0.1s
+  transition: scale 0.1s;
 }
 
 .table-wrapper table tbody tr:hover,
-.table-wrapper table tbody tr:focus, 
+.table-wrapper table tbody tr:focus,
 .table-wrapper table tbody tr:target {
   cursor: pointer;
   scale: 1.02;
@@ -228,7 +229,8 @@ button:focus-visible {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  padding: 1em 0;
+  flex-wrap: wrap;
+  padding-inline: 2em;
 }
 
 .table-numbers-pages {
@@ -242,9 +244,24 @@ button:focus-visible {
   gap: 0.5em;
 }
 
-.table-numbers-group button {
-  /* font-size: 0.7em; */
-  /* size: calc(2 + 9vw); */
+.table-controls button {
+  font-size: calc(0.8em + 0.6vw);
+  size: calc(2 + 9vw);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0 6px;
+  font-weight: 500;
+  font-family: inherit;
+  color: light-dark(fff7, 0007);
+  background-color: light-dark(var, #fff3);
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+.table-controls button:disabled {
+  background-color: light-dark(#0003, #fff3);
+  cursor: not-allowed;
+  transition: border-color 0.25s;
 }
 
 .comments-list {
@@ -262,7 +279,6 @@ button:focus-visible {
 .comment-page {
   font-size: 1.2em;
   max-width: 800px;
-
 }
 
 .comment-page-header {
@@ -303,13 +319,11 @@ button:focus-visible {
   justify-content: space-between;
 }
 
-.comment-user-info {
-}
+.comment-user-info {}
 
 .comment-text-content {
   padding: 1em;
 }
-
 
 .modal {
   display: none;
@@ -386,4 +400,3 @@ button:focus-visible {
     opacity: 1;
   }
 }
-

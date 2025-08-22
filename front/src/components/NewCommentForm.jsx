@@ -1,12 +1,11 @@
-import {useState, useRef} from 'react';
-import DOMPurify from 'dompurify';
-import Editor from './Editor';
+import { useState, useRef } from "react";
+import DOMPurify from "dompurify";
+import Editor from "./Editor";
 
-
-const NewCommentForm = () => {
-  const [comment, setComment] = useState('');
+const NewCommentForm = ({ replyTo }) => {
+  const [comment, setComment] = useState("");
   const textareaRef = useRef(null);
-  
+
   function submitHandle(e) {
     e.preventDefault();
 
@@ -15,7 +14,7 @@ const NewCommentForm = () => {
   }
 
   function onChangeHandle(e) {
-    setComment(e.target.value)
+    setComment(e.target.value);
   }
   function selectHandle(e) {
     console.log(e.target.selectionStart);

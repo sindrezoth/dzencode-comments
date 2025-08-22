@@ -17,14 +17,14 @@ const AuthProvider = ({ children }) => {
       }
 
       try {
-        const {data} = await axios.get("/api/auth", {
+        const { data } = await axios.get("/api/auth", {
           withCredentials: true,
           headers: headers,
         });
 
-        console.log(data);
+        // console.log(data);
         setAuthed(data.username);
-        if(data.accessToken) {
+        if (data.accessToken) {
           setAccessToken(data.accessToken);
         }
       } catch (err) {
@@ -35,13 +35,13 @@ const AuthProvider = ({ children }) => {
     tryAuth();
   }, []);
 
-  async function logout () {
+  async function logout() {
     try {
-      const {data} = await axios.get("/api/logout");
+      const { data } = await axios.get("/api/logout");
 
       console.log(data);
       setAuthed(data.username);
-      if(data.accessToken) {
+      if (data.accessToken) {
         setAccessToken(data.accessToken);
       }
     } catch (err) {

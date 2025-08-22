@@ -8,7 +8,7 @@ function App() {
   const { authed, setAuthed } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log(authed);
+    // console.log(authed);
   }, [authed]);
 
   return (
