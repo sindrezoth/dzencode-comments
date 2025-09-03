@@ -1,18 +1,14 @@
-const auth = require("../controllers/authController");
-const jwt = require("jsonwebtoken");
-
+const { authProcess } = require("../controllers/authController");
 const authMiddleware = async (req, res, next) => {
-  const cookies = req.cookies;
-  const accessToken = req.headers["authorization"];
+  const result = await authProcess(req, res);
 
-  console.log(cookies);
-  if(cookies?.jwt) {
-    const refreshToken = cookies.jwt;
-    jwt.verify(refreshToken)
+  if (!result) {
+    res.status(403).json({ message: "Frobidden." });
+    return;
   }
-  console.log("accessToken", accessToken);
 
-  res.json({message: 'pizda'})
+  req.authed = { username: result.username, userId: result.userId };
+
   next();
 };
 

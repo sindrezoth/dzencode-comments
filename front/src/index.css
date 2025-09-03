@@ -45,7 +45,6 @@ body {
   width: 100%;
   height: 100dvh;
   margin: 0 auto;
-  text-align: center;
 }
 
 header {
@@ -54,6 +53,34 @@ header {
   margin-top: 0;
   box-shadow: 0px 5px 10px -5px light-dark(rgba(0, 0, 0, 0.5), rgba(250, 250, 250, 0.3));
   margin-bottom: 1em;
+  text-align: center;
+  display: flex;
+}
+
+header nav ul {
+  margin-left: 2em;
+  height: 100%;
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header nav ul li {
+  margin: 0 1em;
+  text-align: center;
+  user-select: none;
+}
+
+.header-authed {
+  display: flex;
+  gap: 1em;
+  margin-left: auto;
+  align-items: center;
+}
+
+.header-authed button {
+  font-size: 0.8rem;
 }
 
 main {
@@ -65,17 +92,58 @@ main {
 .form-wrapper {
   width: 100%;
   min-width: 30ch;
-  max-width: 70ch;
+  /* max-width: 70ch; */
+  max-width: 130ch;
   background-color: #fff3;
   border-radius: 1em;
   padding: 0.5em;
+}
+
+.sign-form {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.sign-form input {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 0.8rem;
+}
+
+.sign-form input:valid {
+  background-color: #0f06;
+}
+
+.sign-form input:invalid {
+  background-color: #f006;
+}
+
+.sign-form label {
+  display: inline-block;
+  text-wrap: nowrap;
+  width: 0;
+  height: 0;
+  overflow-x: hidden;
+}
+
+.sign-form button {
+  font-size: 1.3rem;
+}
+
+.sign-form button:disabled {
+  background-color: #fff6;
+}
+
+.sign-toggle button {
+  background-color: transparent;
 }
 
 form {
   width: 100%;
 }
 
-textarea {
+.form-wrapper textarea {
   padding: 0.5em;
   font-size: 1.2em;
   width: 100%;
@@ -86,10 +154,78 @@ textarea {
   border: none;
 }
 
-form>button {
-  float: right;
-  margin-bottom: 0.5em;
-  margin-right: 0.5em;
+.formatted-comment {
+  padding: 0.5em;
+  font-size: 1.2em;
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 1em;
+  border-radius: 0.5em;
+  border: none;
+  background-color: #fff4;
+  min-height: 4lh;
+}
+
+.formatted-code {
+  display: inline-block;
+  margin: 0.1rem;
+  border-radius: 0.5rem;
+  background: light-dark(#dadada, #1e1e1e);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 0.5em;
+}
+
+.formatted-code code {
+  font-size: 1.2rem;
+}
+
+.formatted-code.block {
+  background: light-dark(#dadada, #1e1e1e);
+}
+
+.formatted-code.inline {
+  display: inline-block;
+  background: light-dark(#dadada, #1e1e1e);
+}
+
+.formatted-code-block pre code {
+  display: inline-block;
+}
+
+.formatted-code-block pre,
+.formatted-code-inline pre {
+  padding: 0.5rem;
+}
+
+.code-language {
+  display: block;
+  font-size: 1rem;
+  padding: 0.1rem 0.55rem;
+  background-color: #fff2;
+}
+
+.selection-formatting-btn {}
+
+.selection-formatting-btn:disabled {
+  background-color: #fff3;
+}
+
+.selection-formatting-btn.crossed {
+  text-decoration: line-through black 3px;
+}
+
+code {
+  font-family: "Fira Code", monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  /* display: block; */
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
 }
 
 a {
@@ -129,13 +265,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.auth-btns {
-  scale: 0.8;
-  position: absolute;
-  top: 0.7em;
-  right: 0.2em;
-}
-
 .card {
   padding: 2em;
 }
@@ -154,7 +283,6 @@ button:focus-visible {
   outline: 1px solid #2229;
   border-radius: 0.5em;
   padding: 0.5em;
-  text-align: left;
   overflow: scroll;
   text-wrap: wrap;
 }
@@ -196,6 +324,7 @@ button:focus-visible {
 }
 
 .table-wrapper thead {
+  text-align: center;
   background-color: #fff6;
 }
 
@@ -276,8 +405,13 @@ td {
   margin-bottom: 1em;
 }
 
+.comment-page-wrapper {
+  margin-bottom: 1em;
+}
+
 .comment-page {
   font-size: 1.2em;
+  width: 100%;
   max-width: 800px;
 }
 
@@ -291,7 +425,6 @@ td {
 .comment-page-body {
   background-color: #fff2;
   padding: 1em;
-  text-align: left;
 }
 
 .comment-page-reply-list {
@@ -302,8 +435,24 @@ td {
   list-style: none;
 }
 
-.comment-page-reply {
-  /* background-color: #fff7; */
+.comment-block-reply-btns {
+  padding: 0.7rem;
+  font-size: 1.3rem;
+  background-color: transparent;
+  color: light-dark(black, linen);
+}
+
+.comment-block-image {
+  width: 100px;
+}
+
+.comment-modal-image {
+  width: 100%;
+}
+
+.reply-page-wrapper {
+  width: 95%;
+  max-width: 800px;
 }
 
 .comment-wrapper {
@@ -325,6 +474,25 @@ td {
   padding: 1em;
 }
 
+.link-to {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.link-to a {
+  display: inline-block;
+  color: light-dark(#225f11, #83f3a8);
+  padding: 0.3em;
+  border: light-dark(#225f11, #83f3a8) 1px solid;
+  border-radius: 0.5em;
+  transition: scale 0.02s;
+}
+
+.link-to a:focus,
+.link-to a:hover {
+  scale: 1.1;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -342,7 +510,7 @@ td {
 .modal-content {
   position: relative;
   top: 50%;
-  translate: 0 -80%;
+  translate: 0 -50%;
   width: 600px;
   max-width: 100%;
   margin: auto;

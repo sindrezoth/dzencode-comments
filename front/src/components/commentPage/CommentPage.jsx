@@ -2,31 +2,32 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReplyList from "./ReplyList";
 import CommentBlock from "./CommentBlock";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const CommentPage = () => {
   const [comment, setComment] = useState(null);
   const [replyList, setReplyList] = useState([]);
   const { id: commentId } = useParams();
+  const navigate = useNavigate();
 
   async function getComment(id) {
-    let result = await axios.get(`/api/comments/${id}`);
-
-    if (result.data) {
-      setComment(result.data);
-    }
-
-    if(result.data.replyIds[0]) {
-      result = await axios.get(
-        `/api/comments?commentsIds=${result.data.replyIds.join(",")}`,
-      );
+    try {
+      let result = await axios.get(`/api/comments/${id}`);
 
       if (result.data) {
-        setReplyList(result.data);
+        setComment(result.data);
+      }
+
+      if (result.data.replies) {
+        setReplyList(result.data.replies);
+      } else {
+        setReplyList([]);
       }
     }
-    else {
-      setReplyList([]);
+    catch(err) {
+      if(err.status === 404) {
+        navigate("/not-found");
+      }
     }
   }
 
@@ -39,10 +40,7 @@ const CommentPage = () => {
       {comment ? (
         <>
           <CommentBlock comment={comment} />
-          {
-            !!replyList.length &&
-              <ReplyList replyList={replyList} />
-          }
+          {!!replyList.length && <ReplyList replyList={replyList} />}
         </>
       ) : (
         <p>Loading...</p>

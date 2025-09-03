@@ -1,27 +1,32 @@
 const db = require("../db/dbConn");
 
-const toDBfields = {
-  userId: "user_id",
-  text: "text",
-  replyTo: "reply_to",
-  qutoeStart: "quote_start",
-  qutoeEnd: "quote_end",
-  attachedFilePath: "attached_file_path",
-  createdAt: "created_at",
-};
-
-
-const getCommentsService = async (commentIds) => {
-  let query = "SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c JOIN users u WHERE u.id = c.user_id AND c.reply_to IS NOT NULL";
-
-  if(commentIds && commentIds.length) {
-    query += ` AND c.id IN (${commentIds.map(id => `${id}`).join(', ')})`;
+const getCommentsService = async (commentIds, withReplyTo) => {
+  let query =
+    `SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.attached_file_path as attachedFilePath, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c 
+JOIN users u ON u.id = c.user_id`;
+  if (commentIds && commentIds.length) {
+    query += ` AND c.id IN (${commentIds.map((id) => `${id}`).join(", ")})`;
   }
 
-  const [rows] = await db.query(query);
+  if(withReplyTo !== undefined) {
+    query += ` WHERE c.reply_to IS ${withReplyTo ? 'NOT ': ''}NULL`;
+  }
+
+  const [rows] = await db.query(query + ';');
 
   return rows;
 };
+
+const getCommentsOfUserService = async (userId) => {
+  let query =
+    `SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.attached_file_path as attachedFilePath, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c 
+JOIN users u ON u.id = c.user_id
+WHERE u.id = ${userId}`;
+
+  const [rows] = await db.query(query + ';');
+
+  return rows;
+}
 
 const getCommentService = async (commentId) => {
   let query = `SELECT 
@@ -30,32 +35,63 @@ u.username as username,
 c.id as commentId, 
 c.text as text, 
 c.reply_to as replyTo, 
+c.attached_file_path as attachedFilePath,
 c.created_at as createdAt, 
-c.updated_at as updatedAt,
-cc.id as replyId
+c.updated_at as updatedAt
 FROM comments c 
 JOIN users u ON u.id = c.user_id
-LEFT JOIN comments cc ON cc.reply_to = c.id
 `;
 
   if (commentId) {
-    console.log(commentId)
-    query = `${query} WHERE c.id = ${commentId}`;
+    query += ` WHERE c.id = ${commentId}`;
   } else {
-    // query += " WHERE u.id = c.user_id ORDER BY RAND() LIMIT 1";
+    query += " ORDER BY RAND() LIMIT 1";
+  }
+
+  const [rows] = await db.query(query);
+
+  return rows[0];
+};
+
+const getCommentReplysService = async (commentId) => {
+  let query = `SELECT 
+u.id as userId, 
+u.username as username, 
+c.id as commentId, 
+c.text as text, 
+c.reply_to as replyTo, 
+c.attached_file_path as attachedFilePath,
+c.created_at as createdAt, 
+c.updated_at as updatedAt
+FROM comments c 
+JOIN users u ON u.id = c.user_id
+`;
+
+  if (commentId) {
+    query += ` WHERE c.reply_to = ${commentId}`;
+  } else {
+    const [rows] = await db.query('SELECT c.id as commentId FROM comments ORDER BY RAND() LIMIT 1');
+    console.log(rows[0].commentId);
+    query += ` WHERE c.reply_to = ${rows[0].commentId}`;
   }
 
   const [rows] = await db.query(query);
 
   return rows;
-};
+}
 
-const postCommentService = async (comment) => {
+const postCommentService = async ({ userId, comment, filePath, replyTo }) => {
   let result;
+  const query = 
+`INSERT INTO comments (user_id, text, reply_to, attached_file_path) 
+VALUES (
+${userId}, 
+'${comment.replaceAll("'", "''")}', 
+${replyTo ? `${replyTo}`: 'NULL'}, 
+${filePath ? `'${filePath}'` : 'NULL'}
+);`;
 
-  const res = await db.query(
-    `INSERT INTO comments (${valueNames.map((v) => `${v}`).join(", ")}) VALUES (${values.map((v) => `'${v}'`).join(", ")})`,
-  );
+  const res = await db.query(query);
 
   result = res[0];
 
@@ -63,29 +99,23 @@ const postCommentService = async (comment) => {
 };
 
 const addComments = async (comments) => {
+  const results = [];
   const connection = await db.getConnection();
   try {
     await connection.beginTransaction();
 
-    const [quizResults] = await connection.query(
-      "INSERT INTO quizzes(title) values(?)",
-      [quiz.title],
-    );
+    for (const { userId, text, attachedFilePath, replyTo } of comments) {
+      const query = 
+        `INSERT INTO comments (user_id, text, reply_to, attached_file_path) 
+VALUES (
+${userId}, 
+'${text.replaceAll("'", "''")}', 
+${replyTo ? `${replyTo}`: 'NULL'}, 
+${attachedFilePath ? `'${attachedFilePath}'` : 'NULL'}
+);`;
 
-    const quizId = quizResults.insertId;
-
-    for (const question of quiz.questions) {
-      const [questionsResult] = await connection.query(
-        "INSERT INTO questions(quiid, text) values (?, ?)",
-        [quizId, question.title],
-      );
-
-      for (const answer of question.answers) {
-        await connection.query(
-          "INSERT INTO options(qid, text, ans) values(?, ?, ?)",
-          [questionsResult.insertId, answer.title, answer.ans],
-        );
-      }
+      const r = await connection.query(query);
+      results.push(r[0]);
     }
 
     await connection.commit();
@@ -94,11 +124,17 @@ const addComments = async (comments) => {
     console.error(err);
   } finally {
     connection.release();
+    return results;
   }
-};
+
+}
+
 
 module.exports = {
   getCommentsService,
   getCommentService,
+  getCommentReplysService,
+  getCommentsOfUserService,
   postCommentService,
+  addComments,
 };

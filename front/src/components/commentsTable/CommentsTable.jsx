@@ -2,31 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import TableControls from "./TableControls";
 import { useParams, useSearchParams, useNavigate } from "react-router";
-
-const theadList = [
-  {
-    id: "commentId",
-    name: "comment ID",
-  },
-  {
-    id: "username",
-    name: "username",
-  },
-  {
-    id: "email",
-    name: "email",
-  },
-  {
-    id: "createdAt",
-    name: "createdat",
-  },
-  {
-    id: "updatedAt",
-    name: "updated at",
-  },
-];
+import TableRow from "./TableRow";
+import TableHead from "./TableHead";
 
 const CommentsTable = () => {
+  const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState({
     current: null,
@@ -35,12 +15,10 @@ const CommentsTable = () => {
   const [entitiesPerPage, setEntitiesPerPage] = useState(25);
 
   const { page: pageNum } = useParams();
-  // const sp = useSearchParams();
-  // console.log(sp[0].entries().next());
 
   useEffect(() => {
-    if(!isNaN(pageNum)) {
-      setPage(prev => ({...prev, current: +pageNum}));
+    if (!isNaN(pageNum)) {
+      setPage((prev) => ({ ...prev, current: +pageNum }));
     }
   }, [pageNum]);
 
@@ -48,13 +26,18 @@ const CommentsTable = () => {
 
   useEffect(() => {
     async function getAll() {
-      const res = await axios.get("/api/comments");
-      if (res.data) {
-        setComments(res.data);
-        setPage({
-          current: +pageNum || 1,
-          total: Math.ceil(res.data.length / entitiesPerPage),
-        });
+      try {
+        const res = await axios.get("/api/comments?withReplyTo=0");
+        if (res.data) {
+          setComments(res.data);
+          setPage({
+            current: +pageNum || 1,
+            total: Math.ceil(res.data.length / entitiesPerPage),
+          });
+        }
+      } catch (err) {
+        setError(err.response.data.message);
+        console.log(err);
       }
     }
     getAll();
@@ -62,7 +45,7 @@ const CommentsTable = () => {
 
   const [sortBy, setSortBy] = useState({
     name: "createdAt",
-    asc: false,
+    asc: true,
   });
 
   function handleSort(colName) {
@@ -71,7 +54,7 @@ const CommentsTable = () => {
     } else {
       setSortBy({
         name: colName,
-        asc: false,
+        asc: ["createdAt", "updatedAt"].includes(colName) ? true : false,
       });
     }
   }
@@ -99,7 +82,7 @@ const CommentsTable = () => {
           }
           return a.toLowerCase().localeCompare(b.toLowerCase());
         }
-        return sortBy.asc ? a - b : b - a;
+        return sortBy.asc ? b - a : a - b;
       })
       .slice(
         entitiesPerPage * (page.current - 1),
@@ -109,47 +92,29 @@ const CommentsTable = () => {
 
   return (
     <>
-      {comments && comments.length ? (
+      {error ? (
+        <p style={{ fontSize: "1.5em" }}>{error}</p>
+      ) : comments && comments.length ? (
         <>
           <TableControls page={page} toPage={toPage} />
           <div className="table-wrapper">
             <table>
-              <thead>
-                <tr>
-                  {theadList.map((n, i) =>
-                    !i ? (
-                      <th key={`thead-th-${pageNum}-${i}`} id={n.id} onClick={() => handleSort(n.id)}>
-                        {`${n.name} ${getSortSymbol(n.id)}`}
-                      </th>
-                    ) : (
-                      <td key={`thead-td-${pageNum}-${i}`} id={n.id} onClick={() => handleSort(n.id)}>
-                        {`${n.name} ${getSortSymbol(n.id)}`}
-                      </td>
-                    ),
-                  )}
-                </tr>
-              </thead>
+              <TableHead
+                pageNum={pageNum}
+                handleSort={handleSort}
+                getSortSymbol={getSortSymbol}
+              />
               <tbody>
-                {
-                  prepareListToRender()
-                  .map(
-                    ({ commentId, username, email, createdAt, updatedAt }, i) => (
-                      <tr key={`table-row-${pageNum}-${i}`} onClick={() => navigate("/comment/" + commentId)}>
-                        <th>{commentId}</th>
-                        <td>{username}</td>
-                        <td>{email}</td>
-                        <td>{createdAt}</td>
-                        <td>{updatedAt}</td>
-                      </tr>
-                    ),
-                  )}
+                {prepareListToRender().map((commentData, i) => (
+                  <TableRow commentData={commentData} i={i} pageNum={pageNum} />
+                ))}
               </tbody>
             </table>
           </div>
           <TableControls page={page} toPage={toPage} />
         </>
       ) : (
-        <p>Loading... </p>
+        <p style={{ fontSize: "1.5em" }}>Loading... </p>
       )}
     </>
   );

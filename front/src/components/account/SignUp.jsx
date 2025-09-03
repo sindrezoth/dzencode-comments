@@ -34,7 +34,6 @@ const SignUp = ({ closeHandle, signToggle }) => {
     );
 
     if (data && !error && !loading) {
-      console.log(data);
       if (data.user) {
         setAuthed(data.user);
         setAccessToken(data.accessToken);
@@ -57,26 +56,33 @@ const SignUp = ({ closeHandle, signToggle }) => {
         <h2>Реєстрація</h2>
       </div>
       <div className="modal-body">
-        <form onSubmit={submitHandle}>
+        <form className="sign-form" onSubmit={submitHandle}>
           <label htmlFor="username">username</label>
           <input
             id="username"
             value={username}
+            placeholder="username"
+            pattern="[\w\-]{5,20}"
+            required
             onChange={(e) => setUsername(e.target.value)}
           />
           <label htmlFor="email">email</label>
           <input
             id="email"
             value={email}
+            placeholder="email"
+            type="email"
+            pattern="^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$"
+            required
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button type="submit">submit</button>
+          <button type="submit">зареєструватись</button>
         </form>
       </div>
       <div className="modal-footer">
-        <h3>
+        <p className="sign-toggle">
           вже є акаунт? <button onClick={signToggle}>увійти</button>
-        </h3>
+        </p>
       </div>
     </>
   );

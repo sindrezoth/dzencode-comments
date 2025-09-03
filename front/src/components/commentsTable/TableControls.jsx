@@ -1,10 +1,10 @@
 const TableControls = ({ page, toPage }) => {
   const numberButtons = [];
-  const firsts = [];//[1, 2];
+  const firsts = []; //[1, 2];
   const currents = [page.current - 1, page.current, page.current + 1].filter(
     (c) => c > 0 && c < page.total + 1,
   );
-  const lasts = []//[page.total - 1, page.total];
+  const lasts = []; //[page.total - 1, page.total];
 
   const firstsSet = new Set(firsts);
   const lastsSet = new Set(lasts);
@@ -36,11 +36,15 @@ const TableControls = ({ page, toPage }) => {
               {g
                 .sort((a, b) => a - b)
                 .map((f) => (
-                  <button key={`${page.current}-to-${f}`} disabled={
-                    page.current === f
-                    // page.current === 1 || 
-                    // page.current === page.total - 1 || 
-                  } onClick={() => toPage(f)}>
+                  <button
+                    key={`${page.current}-to-${f}`}
+                    disabled={
+                      page.current === f
+                      // page.current === 1 ||
+                      // page.current === page.total - 1 ||
+                    }
+                    onClick={() => toPage(f)}
+                  >
                     {f}
                   </button>
                 ))}

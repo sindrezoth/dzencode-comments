@@ -3,13 +3,12 @@ const router = express.Router();
 const {
   getUsers,
   getUser,
-  postUser,
+  getRandomUser,
 } = require("../controllers/usersController");
 
 router
   .get("/", getUsers)
-  .get("/random", getUser)
-  .get("/:userId", getUser)
-  .post("/", postUser);
+  .get("/random", getRandomUser)
+  .get("/:userId", getUser);
 
 module.exports = router;

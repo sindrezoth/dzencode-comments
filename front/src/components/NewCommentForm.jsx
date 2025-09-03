@@ -1,40 +1,72 @@
-import { useState, useRef } from "react";
-import DOMPurify from "dompurify";
-import Editor from "./Editor";
+import { useContext, useState } from "react";
+import Editor from "./editor/Editor";
+import FileInput from "./editor/FileInput";
+import axios from "axios";
+import AuthContext from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 const NewCommentForm = ({ replyTo }) => {
-  const [comment, setComment] = useState("");
-  const textareaRef = useRef(null);
+  const { authed } = useContext(AuthContext);
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  function submitHandle(e) {
+  async function submitHandle(e) {
     e.preventDefault();
+    setLoading(true);
 
-    console.log("submit!");
-    console.log(comment);
-  }
+    const comment = localStorage.getItem("comment");
+    if (comment || file) {
+      const formData = new FormData();
+      formData.append("user", authed);
+      if (replyTo) {
+        formData.append("replyTo", replyTo);
+      }
+      formData.append("comment", comment);
+      formData.append("file", file);
+      try {
+        const result = await axios.post("/api/comments", formData);
 
-  function onChangeHandle(e) {
-    setComment(e.target.value);
-  }
-  function selectHandle(e) {
-    console.log(e.target.selectionStart);
-    console.log(e.target.selectionEnd);
-  }
+        setLoading(false);
+        setError(null);
 
+        setSuccess(result.data.message);
+        localStorage.removeItem("comment");
+        if(replyTo) {
+          navigate("/comment/" + replyTo);
+        }
+        else {
+          console.log(result);
+          navigate("/comment/" + result.data.newCommentId);
+        }
+      } catch (err) {
+        setSuccess(null);
+        setLoading(false);
+        setError(err.message);
+      }
+    }
+  }
   return (
-    <div className="form-wrapper">
-      <form onSubmit={submitHandle}>
-        <Editor />
-        {/* <textarea  */}
-        {/*   id="textareainput"  */}
-        {/*   onChange={onChangeHandle}  */}
-        {/*   value={comment}  */}
-        {/*   ref={textareaRef} */}
-        {/*   onSelect={selectHandle} */}
-        {/* ></textarea> */}
-        <button type="submit">Надіслати</button>
-      </form>
-    </div>
+    <>
+      <div className="form-wrapper">
+        <form onSubmit={submitHandle}>
+          <Editor />
+          <div className="form-footer">
+            <FileInput selectedFile={file} setSelectedFile={setFile} />
+            {error && <p>Помилка відправки: {error}</p>}
+            {success && (
+              <>
+                <p>Успішно відправлено!</p>
+                <p>{success}</p>
+              </>
+            )}
+            {!loading && <button className="editor-submit" type="submit">Надіслати</button>}
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 
