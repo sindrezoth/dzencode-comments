@@ -1,17 +1,10 @@
-const { randomUUID } = require("crypto");
 const {
   getCommentsService,
   getCommentService,
   postCommentService,
   getCommentReplysService,
-  addComments,
 } = require("../services/commentsService");
 const { postFileService } = require("../services/fileService");
-const { getRandomUser } = require("./usersController");
-const { getRandomUserService } = require("../services/usersService");
-const getRandomCodeBlock = require("../helpers/getRandomCodeBlock");
-const generateComment = require("../helpers/generateComment");
-const { inspect } = require("util");
 
 const getComments = async (req, res) => {
   let { commentsIds, withReplyTo } = req.query || {
@@ -107,25 +100,8 @@ const postComment = async (req, res) => {
   res.json({ message: "failed..." });
 };
 
-const generateComments = async (req, res) => {
-  const count = req.params.count || 10;
-
-  const commentList = [];
-
-  for (let i = 0; i < count; i++) {
-    const comment = await generateComment();
-
-    commentList.push(comment);
-  }
-
-  const result = await addComments(commentList);
-
-  res.json({ message: "generated, result length: " + result.length });
-};
-
 module.exports = {
   getComments,
   getComment,
   postComment,
-  generateComments,
 };

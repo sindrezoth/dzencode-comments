@@ -19,6 +19,9 @@ const Header = () => {
           <li>
             <NavLink to="/comment/new">Створити</NavLink>
           </li>
+          <li>
+            <NavLink to="generate">Згенерувати</NavLink>
+          </li>
         </ul>
       </nav>
       <div className="header-authed">

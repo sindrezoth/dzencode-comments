@@ -3,8 +3,10 @@
 .env.production
 .env.*
 
+
 logs
 files
-testf
+imgs-txts
+build
 
 node_modules

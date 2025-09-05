@@ -2,7 +2,6 @@ const {
   getUsersService,
   getUserService,
   getRandomUserService,
-  postUserService,
 } = require("../services/usersService");
 
 const getUsers = async (req, res) => {
@@ -65,31 +64,8 @@ const getRandomUser = async (req, res) => {
   return res.status(404).json({ message: "Not found." });
 };
 
-const generateUsers = async (req, res) => {
-  let data = await fetch(
-    "https://randomuser.me/api/?inc=email,login&&results=1000",
-  );
-  data = await data.json();
-
-  const users = data.results.map(({ email, login: { username } }) => ({
-    email,
-    username,
-  }));
-
-  for (const user of users) {
-    try {
-      await postUserService(user);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  res.json({ message: "users generated." });
-};
-
 module.exports = {
   getUsers,
   getUser,
   getRandomUser,
-  generateUsers,
 };

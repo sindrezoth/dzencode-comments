@@ -45,23 +45,22 @@ const signInController = async (req, res) => {
 
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        // secure: true,
+        // sameSite: "none",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
       return res.status(200).json({
         user: { username, email, userId: id },
         accessToken: accessToken,
       });
-    }
-    else {
+    } else {
       res.status(404).json({
-        message: "Немає такого користувача :("
-      })
+        message: "Немає такого користувача :(",
+      });
       return;
     }
-
   } catch (err) {
     return res.json({ message: err.message });
   }
@@ -102,9 +101,10 @@ const signUpController = async (req, res) => {
 
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        // secure: true,
+        // sameSite: "none",
+        sameSite: "lax",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
       });
 
       return res.status(201).json({

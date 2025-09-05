@@ -39,17 +39,14 @@ const CommentBlock = ({ comment }) => {
                     onClick={openHandle}
                     className={`comment-${variant}-image`}
                     alt={`attached image to comment with id: ${comment.commentId}`}
-                    src={`https://stafeelacock.local/api/${comment.attachedFilePath}`}
+                    src={`/api/${comment.attachedFilePath}`}
                   />
                 )}
               </ImageModal>
             )}
           {comment.attachedFilePath &&
             [/.txt$/].some((rgx) => rgx.test(comment.attachedFilePath)) && (
-              <a
-                targer="blank"
-                href={`https://stafeelacock.local/api/${comment.attachedFilePath}`}
-              >
+              <a targer="blank" href={`/api/${comment.attachedFilePath}`}>
                 прикріплений файл
               </a>
             )}

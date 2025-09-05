@@ -72,9 +72,33 @@ const postUserService = async (user) => {
   return result;
 };
 
+const addUsers = async (users) => {
+  const results = [];
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    for (const { username, email, homepage } of users) {
+      const query = `INSERT INTO users (username, email, homepage) VALUES ('${username}', '${email}', '${homepage || "NULL"}')`;
+
+      const r = await connection.query(query);
+      results.push(r[0]);
+    }
+
+    await connection.commit();
+  } catch (err) {
+    connection.rollback();
+    console.error(err);
+  } finally {
+    connection.release();
+    return results;
+  }
+};
+
 module.exports = {
   getUsersService,
   getUserService,
   postUserService,
   getRandomUserService,
+  addUsers,
 };

@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import TableControls from "./TableControls";
-import { useParams, useSearchParams, useNavigate } from "react-router";
+import { useParams, useSearchParams, useNavigate, Link } from "react-router";
 import TableRow from "./TableRow";
 import TableHead from "./TableHead";
+import GenerateDataForm from "../GenerateDataForm";
 
 const CommentsTable = () => {
   const [error, setError] = useState(null);
@@ -13,16 +14,38 @@ const CommentsTable = () => {
     total: null,
   });
   const [entitiesPerPage, setEntitiesPerPage] = useState(25);
+  const navigate = useNavigate();
 
   const { page: pageNum } = useParams();
+
+  let sortByQuery, ascQuery;
+  const params = useSearchParams()[0];
+
+  for (let [attr, val] of params) {
+    if (attr === "sortBy") {
+      sortByQuery = val;
+    }
+    if (attr === "asc") {
+      ascQuery = val;
+    }
+  }
+
+  const [sortBy, setSortBy] = useState({
+    name: sortByQuery || "createdAt",
+    asc: ascQuery || true,
+  });
+
+  if (!params) {
+    navigate(
+      `/comments-table/${page.current}?sortBy=${sortBy.name}&asc=${sortBy.asc}`,
+    );
+  }
 
   useEffect(() => {
     if (!isNaN(pageNum)) {
       setPage((prev) => ({ ...prev, current: +pageNum }));
     }
   }, [pageNum]);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function getAll() {
@@ -36,27 +59,28 @@ const CommentsTable = () => {
           });
         }
       } catch (err) {
-        setError(err.response.data.message);
-        console.log(err);
+        if (err.status === 404) {
+          setError("Коментарі відсутні.");
+        }
       }
     }
     getAll();
   }, []);
 
-  const [sortBy, setSortBy] = useState({
-    name: "createdAt",
-    asc: true,
-  });
-
   function handleSort(colName) {
+    let asc;
     if (sortBy.name === colName) {
+      asc = !sortBy.asc;
       setSortBy((prev) => ({ ...prev, asc: !prev.asc }));
     } else {
+      asc = ["createdAt", "updatedAt"].includes(colName) ? true : false;
       setSortBy({
         name: colName,
         asc: ["createdAt", "updatedAt"].includes(colName) ? true : false,
       });
     }
+
+    navigate(`/comments-table/${page.current}?sortBy=${colName}&asc=${asc}`);
   }
 
   function getSortSymbol(colName) {
@@ -93,7 +117,10 @@ const CommentsTable = () => {
   return (
     <>
       {error ? (
-        <p style={{ fontSize: "1.5em" }}>{error}</p>
+        <>
+          <p style={{ fontSize: "1.5em" }}>{error}</p>
+          <Link to={"/generate"}>Перейти на сторінку генерації даних</Link>
+        </>
       ) : comments && comments.length ? (
         <>
           <TableControls page={page} toPage={toPage} />

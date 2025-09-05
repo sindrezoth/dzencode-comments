@@ -23,8 +23,8 @@ function a(href, text) {
         window.location.origin +
         "/linkto/" +
         (href.includes("http")
-          ? href.replace("/", "%2f")
-          : "https:%2f%2f" + href.replace("/", "%2f"))
+          ? href.replaceAll("/", "%2f")
+          : "https:%2f%2f" + href.replaceAll("/", "%2f"))
       }
     >
       {text}

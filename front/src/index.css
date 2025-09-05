@@ -16,10 +16,12 @@
 
   color: light-dark(var(--color-dark), var(--color-light));
   background-attachment: fixed;
-  background-image: linear-gradient(110deg,
-      light-dark(var(--bg-light-1), var(--bg-dark-1)) 0%,
-      light-dark(var(--bg-light-2), var(--bg-dark-2)) 50%,
-      light-dark(var(--bg-light-3), var(--bg-dark-3)) 100%);
+  background-image: linear-gradient(
+    110deg,
+    light-dark(var(--bg-light-1), var(--bg-dark-1)) 0%,
+    light-dark(var(--bg-light-2), var(--bg-dark-2)) 50%,
+    light-dark(var(--bg-light-3), var(--bg-dark-3)) 100%
+  );
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -51,7 +53,8 @@ header {
   padding: 1em;
   width: 100%;
   margin-top: 0;
-  box-shadow: 0px 5px 10px -5px light-dark(rgba(0, 0, 0, 0.5), rgba(250, 250, 250, 0.3));
+  box-shadow: 0px 5px 10px -5px
+    light-dark(rgba(0, 0, 0, 0.5), rgba(250, 250, 250, 0.3));
   margin-bottom: 1em;
   text-align: center;
   display: flex;
@@ -206,7 +209,8 @@ form {
   background-color: #fff2;
 }
 
-.selection-formatting-btn {}
+.selection-formatting-btn {
+}
 
 .selection-formatting-btn:disabled {
   background-color: #fff3;
@@ -468,7 +472,8 @@ td {
   justify-content: space-between;
 }
 
-.comment-user-info {}
+.comment-user-info {
+}
 
 .comment-text-content {
   padding: 1em;
@@ -555,6 +560,80 @@ td {
   padding: 2px 16px;
   background-color: var(--bg-light-3);
   color: #434343;
+}
+
+.generate-data-form {
+  font-size: 1.2rem;
+}
+
+.generate-data-form form {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 50%;
+  gap: 0.5em;
+}
+
+.generate-data-form form p {
+  grid-column: 1 / span 2;
+}
+
+.generate-data-form form label {
+  display: grid;
+  place-items: center end;
+}
+
+.generate-data-form form input {
+  font-size: 1.2rem;
+  padding: 0.3em 0.9em;
+  border-style: none;
+  box-shadow: 2px 3px 5px #fa54, -4px -4px 10px #fff2;
+  border-radius: 1em;
+}
+
+.generate-data-form form button {
+  position: relative;
+  font-size: 1.2rem;
+  padding: 0.3rem;
+  background-color: transparent;
+  overflow: hidden;
+  color: light-dark(#93f393, white);
+}
+
+.generate-data-form form button::before {
+  position: absolute;
+  content: "";
+  top: -200%;
+  left: -200%;
+  height: 500%;
+  width: 500%;
+  z-index: -1;
+  background: linear-gradient(
+    transparent,
+    light-dark(var(--bg-dark-1), var(--bg-light-3))
+  );
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(90deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(270deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes animatetop {

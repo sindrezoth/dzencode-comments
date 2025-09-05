@@ -23,6 +23,7 @@ const endpoints = ["/", "/comments"]; // endpoints list
 
 const app = express(); // main app
 
+app.ser("trust proxy", 1);
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
