@@ -9,7 +9,6 @@ const SignIn = ({ closeHandle, signToggle }) => {
     isLoading: false,
     error: null,
   });
-  const inputRef = useRef(null);
 
   const { setAuthed, setAccessToken } = useContext(AuthContext);
 
@@ -47,9 +46,9 @@ const SignIn = ({ closeHandle, signToggle }) => {
         <form className="sign-form" onSubmit={submitHandle}>
           <label htmlFor="usernameoremail">username або email</label>
           <input
+            autoFocus
             id="usernameoremail"
             value={usernameOrEmail}
-            ref={inputRef}
             placeholder="email або username"
             pattern="(^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$)|([\w\-]{5,20})"
             title="username повинен мати 6-20 символів (латиниця верхній або нижній регістр та '_')"

@@ -79,7 +79,13 @@ const addUsers = async (users) => {
     await connection.beginTransaction();
 
     for (const { username, email, homepage } of users) {
-      const query = `INSERT INTO users (username, email, homepage) VALUES ('${username}', '${email}', '${homepage || "NULL"}')`;
+      const query = `
+INSERT INTO users (username, email, homepage) 
+VALUES (
+'${username}', 
+'${email}', 
+'${homepage || "NULL"}'
+) ON DUPLICATE IGNORE`;
 
       const r = await connection.query(query);
       results.push(r[0]);

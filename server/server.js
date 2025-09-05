@@ -23,7 +23,7 @@ const endpoints = ["/", "/comments"]; // endpoints list
 
 const app = express(); // main app
 
-app.ser("trust proxy", 1);
+app.set("trust proxy", 1);
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
@@ -57,8 +57,8 @@ app.use("/files", filesRoutes);
 
 app.use(logMiddleware);
 
-// app.listen(PORT, '0.0.0.0', () => {
-app.listen(PORT, "127.0.0.1", () => {
+app.listen(PORT, "0.0.0.0", () => {
+  // app.listen(PORT, "127.0.0.1", () => {
   console.log("listen on:", PORT);
   console.log(endpoints);
 });

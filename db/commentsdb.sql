@@ -74,8 +74,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES
-(1691,'aaaaa','qqqqq',NULL,'2025-09-04 15:04:45','2025-09-04 15:04:45');
+INSERT INTO `users` (username, email) VALUES
+('aaaaa','qqqqq');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

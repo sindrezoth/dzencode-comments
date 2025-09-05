@@ -59,6 +59,7 @@ const SignUp = ({ closeHandle, signToggle }) => {
         <form className="sign-form" onSubmit={submitHandle}>
           <label htmlFor="username">username</label>
           <input
+            autoFocus
             id="username"
             value={username}
             placeholder="username"

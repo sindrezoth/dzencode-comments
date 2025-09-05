@@ -98,20 +98,24 @@ const CommentsTable = () => {
   }
 
   function prepareListToRender() {
-    return comments
-      .sort(({ [sortBy.name]: a }, { [sortBy.name]: b }) => {
-        if (isNaN(+a) && typeof a === "string") {
-          if (sortBy.asc) {
-            return b.toLowerCase().localeCompare(a.toLowerCase());
+    console.log(comments);
+    if(comments && Array.isArray(comments) && comments.length) {
+      return comments
+        .sort(({ [sortBy.name]: a }, { [sortBy.name]: b }) => {
+          if (isNaN(+a) && typeof a === "string") {
+            if (sortBy.asc) {
+              return b.toLowerCase().localeCompare(a.toLowerCase());
+            }
+            return a.toLowerCase().localeCompare(b.toLowerCase());
           }
-          return a.toLowerCase().localeCompare(b.toLowerCase());
-        }
-        return sortBy.asc ? b - a : a - b;
-      })
-      .slice(
-        entitiesPerPage * (page.current - 1),
-        entitiesPerPage * page.current,
-      );
+          return sortBy.asc ? b - a : a - b;
+        })
+        .slice(
+          entitiesPerPage * (page.current - 1),
+          entitiesPerPage * page.current,
+        );
+    }
+    return [];
   }
 
   return (
