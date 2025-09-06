@@ -18,7 +18,7 @@ const NewCommentForm = ({ replyTo }) => {
     e.preventDefault();
     setLoading(true);
 
-    const comment = localStorage.getItem("comment");
+    const comment = sessionStorage.getItem("comment");
     if (comment || file) {
       const formData = new FormData();
       formData.append("user", authed);
@@ -34,7 +34,7 @@ const NewCommentForm = ({ replyTo }) => {
         setError(null);
 
         setSuccess(result.data.message);
-        localStorage.removeItem("comment");
+        sessionStorage.removeItem("comment");
         if (replyTo) {
           navigate("/comment/" + replyTo);
         } else {

@@ -19,7 +19,7 @@ const Editor = () => {
   const [traverseComment, setTraverseComment] = useState([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("comment");
+    const saved = sessionStorage.getItem("comment");
     if (saved) {
       setComment(saved);
     }
@@ -54,7 +54,7 @@ const Editor = () => {
       e.target.selectionEnd,
     );
     setComment(e.target.value);
-    localStorage.setItem("comment", result.map(({ text }) => text).join(""));
+    sessionStorage.setItem("comment", result.map(({ text }) => text).join(""));
   }
 
   function selectHandle(e) {

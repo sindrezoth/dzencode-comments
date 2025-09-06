@@ -13,13 +13,10 @@ const signRoutes = require("./routes/signRoutes");
 const generateRoutes = require("./routes/generateRoutes");
 const filesRoutes = require("./routes/filesRoutes");
 
-const authMiddleware = require("./middleware/authMiddleware"); // middlewares
 const logMiddleware = require("./middleware/logMiddlware"); // logging
 const requestLogMiddleware = require("./middleware/requestLogMiddleware");
 
 const PORT = process.env.PORT || 3000; // define port
-
-const endpoints = ["/", "/comments"]; // endpoints list
 
 const app = express(); // main app
 
@@ -55,7 +52,5 @@ app.use("/files", filesRoutes);
 app.use(logMiddleware);
 
 app.listen(PORT, "0.0.0.0", () => {
-  // app.listen(PORT, "127.0.0.1", () => {
   console.log("listen on:", PORT);
-  console.log(endpoints);
 });
