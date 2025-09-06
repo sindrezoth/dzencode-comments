@@ -1,13 +1,13 @@
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import { Navigate, Outlet } from "react-router";
+import { Navigate } from "react-router";
 
-const AuthProtect = () => {
+const AuthProtect = ({ children }) => {
   const { authed } = useContext(AuthContext);
   if (!authed) {
-    return <Navigate to="/comments-table"/>;
+    return <Navigate to="/comments-table" />;
   } else {
-    return <Outlet />;
+    return children;
   }
 };
 

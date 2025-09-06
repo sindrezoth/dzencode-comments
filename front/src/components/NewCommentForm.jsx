@@ -35,10 +35,9 @@ const NewCommentForm = ({ replyTo }) => {
 
         setSuccess(result.data.message);
         localStorage.removeItem("comment");
-        if(replyTo) {
+        if (replyTo) {
           navigate("/comment/" + replyTo);
-        }
-        else {
+        } else {
           console.log(result);
           navigate("/comment/" + result.data.newCommentId);
         }
@@ -63,7 +62,11 @@ const NewCommentForm = ({ replyTo }) => {
                 <p>{success}</p>
               </>
             )}
-            {!loading && <button className="editor-submit" type="submit">Надіслати</button>}
+            {!loading && (
+              <button className="editor-submit" type="submit">
+                Надіслати
+              </button>
+            )}
           </div>
         </form>
       </div>
