@@ -8,13 +8,14 @@ import AuthBeforeReply from "./account/AuthBeforeReply";
 import Error404 from "./Error404";
 import LinkToOutside from "./LinkToOutside";
 import GenerateDataForm from "./GenerateDataForm";
+import AuthProtect from "./AuthProtect";
 
 const Main = () => {
   return (
     <main>
       <Routes>
         <Route path="comment">
-          <Route path="new" element={<NewCommentForm />} />
+          <Route path="new" element={<AuthProtect><NewCommentForm /></AuthProtect>} />
           <Route path=":id" element={<CommentPage commentId={60} />} />
           <Route path=":id/reply" element={<AuthBeforeReply />}>
             <Route index element={<ReplyTo />} />

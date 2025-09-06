@@ -8,9 +8,6 @@ import { useNavigate } from "react-router";
 const NewCommentForm = ({ replyTo }) => {
   const { authed } = useContext(AuthContext);
   const navigate = useNavigate();
-  if(!authed) {
-    navigate("/comments-table")
-  }
 
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(null);

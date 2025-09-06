@@ -16,9 +16,11 @@ const Header = () => {
           <li>
             <NavLink to="/comments-table">Коментарі</NavLink>
           </li>
-          <li>
-            <NavLink to="/comment/new">Створити</NavLink>
-          </li>
+          {authed && (
+            <li>
+              <NavLink to="/comment/new">Створити</NavLink>
+            </li>
+          )}
           <li>
             <NavLink to="generate">Згенерувати</NavLink>
           </li>

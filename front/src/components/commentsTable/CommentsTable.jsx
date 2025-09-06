@@ -98,8 +98,7 @@ const CommentsTable = () => {
   }
 
   function prepareListToRender() {
-    console.log(comments);
-    if(comments && Array.isArray(comments) && comments.length) {
+    if (comments && Array.isArray(comments) && comments.length) {
       return comments
         .sort(({ [sortBy.name]: a }, { [sortBy.name]: b }) => {
           if (isNaN(+a) && typeof a === "string") {
