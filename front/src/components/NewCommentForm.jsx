@@ -7,11 +7,15 @@ import { useNavigate } from "react-router";
 
 const NewCommentForm = ({ replyTo }) => {
   const { authed } = useContext(AuthContext);
+  const navigate = useNavigate();
+  if(!authed) {
+    navigate("/comments-table")
+  }
+
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(null);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   async function submitHandle(e) {
     e.preventDefault();

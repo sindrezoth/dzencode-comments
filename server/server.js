@@ -29,15 +29,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOptions = {
-  origin: [
-    "https://stafeelacock.local",
-    // "http://localhost:5173",
-  ],
+  origin: ["http://193.169.189.34"],
   credentials: true,
   optionsSuccessStatus: 200,
   allowedHeaders: ["Content-Type", "authorization"],
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use(requestLogMiddleware);
 
