@@ -42,12 +42,10 @@ const AuthProvider = ({ children }) => {
   async function logout() {
     setIsLoading(true);
     try {
-      const { data } = await axios.get("/api/logout");
+      await axios.get("/api/logout");
 
       setAuthed(null);
-      if (data.accessToken) {
-        setAccessToken(data.accessToken);
-      }
+      setAccessToken(null);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
