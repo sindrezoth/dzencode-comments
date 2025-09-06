@@ -54,10 +54,11 @@ const generateUsersAndComments = async (req, res) => {
     }
 
     res.status(201).json({ message: "data generated." });
+    return;
   }
   catch(err) {
     console.log(err);
-    res.status(500).json({message: "Internal Error"});
+    res.status(500).json({message: "Internal Error", err});
     return;
   }
 
