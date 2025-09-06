@@ -73,31 +73,25 @@ const postUserService = async (user) => {
 };
 
 const addUsers = async (users) => {
-  const results = [];
-  const connection = await db.getConnection();
-  try {
-    await connection.beginTransaction();
+  let query = `
+INSERT IGNORE INTO users (username, email, homepage) 
+VALUES`;
 
-    for (const { username, email, homepage } of users) {
-      const query = `
-INSERT INTO users (username, email, homepage) 
-VALUES (
+  for (const { username, email, homepage } of users) {
+    query += ` (
 '${username}', 
 '${email}', 
 '${homepage || "NULL"}'
-) ON DUPLICATE IGNORE`;
+),`;
+  }
 
-      const r = await connection.query(query);
-      results.push(r[0]);
-    }
-
-    await connection.commit();
+  try {
+    query = query.slice(0, -1);
+    const result = await db.query(query);
+    return result;
   } catch (err) {
-    connection.rollback();
     console.error(err);
-  } finally {
-    connection.release();
-    return results;
+    throw new Error(err);
   }
 };
 
