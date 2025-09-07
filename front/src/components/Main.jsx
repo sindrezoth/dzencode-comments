@@ -15,7 +15,14 @@ const Main = () => {
     <main>
       <Routes>
         <Route path="comment">
-          <Route path="new" element={<AuthProtect><NewCommentForm /></AuthProtect>} />
+          <Route
+            path="new"
+            element={
+              <AuthProtect>
+                <NewCommentForm />
+              </AuthProtect>
+            }
+          />
           <Route path=":id" element={<CommentPage commentId={60} />} />
           <Route path=":id/reply" element={<AuthBeforeReply />}>
             <Route index element={<ReplyTo />} />
@@ -23,7 +30,12 @@ const Main = () => {
         </Route>
 
         <Route path="comments-table">
-          <Route path="" element={<Navigate to="/comments-table/1?sortBy=createdAt&asc=true" />} />
+          <Route
+            path=""
+            element={
+              <Navigate to="/comments-table/1?sortBy=createdAt&asc=true" />
+            }
+          />
           <Route path=":page" element={<CommentsTable />} />
         </Route>
 
@@ -31,7 +43,13 @@ const Main = () => {
 
         <Route path="linkto/:url" element={<LinkToOutside />} />
 
-        <Route exact path="/" element={<Navigate to="/comments-table/1?sortBy=createdAt&asc=true" />} />
+        <Route
+          exact
+          path="/"
+          element={
+            <Navigate to="/comments-table/1?sortBy=createdAt&asc=true" />
+          }
+        />
 
         <Route exact path="not-found" element={<Error404 />} />
 
