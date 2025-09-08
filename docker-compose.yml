@@ -14,7 +14,10 @@ services:
       - app-net
 
   backend:
-    build: ./server
+    build:
+      context: ./server
+      args:
+        PORT: ${BACKEND_PORT}
     container_name: backend
     restart: always
     environment:

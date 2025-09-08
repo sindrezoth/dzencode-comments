@@ -1,4 +1,5 @@
-server {
+function createNginxConfig(port) {
+  const template = `server {
   listen 80;
 
   server_name _;
@@ -11,7 +12,7 @@ server {
   }
 
   location /api/ {
-    proxy_pass http://backend:29992/;
+    proxy_pass http://backend:${port}/;
     proxy_cache_bypass $http_upgrade;
     proxy_http_version 1.1;
 
@@ -23,4 +24,9 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   }
+}`;
+
+  return template;
 }
+
+module.exports = createNginxConfig;

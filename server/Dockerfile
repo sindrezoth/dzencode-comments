@@ -1,3 +1,4 @@
+
 FROM node:22-alpine
 
 WORKDIR /app
@@ -7,6 +8,6 @@ RUN npm install --production
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 29992
 
 CMD ["node", "server.js"]

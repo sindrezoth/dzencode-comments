@@ -16,7 +16,7 @@ const filesRoutes = require("./routes/filesRoutes");
 const logMiddleware = require("./middleware/logMiddlware"); // logging
 const requestLogMiddleware = require("./middleware/requestLogMiddleware");
 
-const PORT = process.env.PORT || 3000; // define port
+const PORT = process.env.BACKEND_PORT || 3000; // define port
 
 const app = express(); // main app
 
