@@ -3,16 +3,22 @@
 виконавець:
 Олександр Боднар
 
+## Опис
+
+
 ## Запуск
 
 Необхідні пакунки:
-Docker
+- Docker
+- nodejs
 
+Створити Dockerfile, nginx.conf і .env файли і запустити docker.
 ```bash
-docker compose up --build
+node genConfig/genenv.js; docker compose up --build
 ```
 
 Після запуску контейнера в базі даних користувачів існує дефолтний користувач:
+
 username: aaaaa
 email: qqqqq
 

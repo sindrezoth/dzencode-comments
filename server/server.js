@@ -2,7 +2,6 @@ require("dotenv").config();
 
 const path = require("path");
 const express = require("express");
-const cors = require("cors"); // access for limited sources
 const cookieParser = require("cookie-parser"); // cookies processing
 const helmet = require("helmet");
 
@@ -24,14 +23,6 @@ app.set("trust proxy", 1);
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
-
-const corsOptions = {
-  origin: ["http://193.169.189.34"],
-  credentials: true,
-  optionsSuccessStatus: 200,
-  allowedHeaders: ["Content-Type", "authorization"],
-};
-// app.use(cors(corsOptions));
 
 app.use(requestLogMiddleware);
 
