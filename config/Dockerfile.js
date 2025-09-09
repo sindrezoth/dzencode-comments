@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-function createDockerfile(port) {
+function createDockerfile(port, printError) {
   const template = `
 FROM node:22-alpine
 
@@ -15,19 +15,21 @@ EXPOSE ${port}
 
 CMD ["node", "server.js"]
 `;
-  let error = null;
+
+
+  let result = null;
   try {
     fs.writeFileSync('./server/Dockerfile', template, 'utf8');
-    console.log('Dockerfile generated!');
+    result = 'Dockerfile generated!';
   }
   catch(err) {
     if(err) {
-      error = err;
+      printError(err);
+      result = '!!! Dockerfile wasn\'t generated!';
     }
   }
 
-
-  return error;
+  return result;
 }
 
 module.exports = createDockerfile;

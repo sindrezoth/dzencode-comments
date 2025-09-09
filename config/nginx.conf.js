@@ -1,4 +1,6 @@
-function createNginxConfig(port) {
+const fs = require('fs');
+
+function createNginxConfig(port, printError) {
   const template = `server {
   listen 80;
 
@@ -26,7 +28,17 @@ function createNginxConfig(port) {
   }
 }`;
 
-  return template;
+  let result = null;
+  try {
+    fs.writeFileSync('./nginx.conf', template, 'utf8');
+    result = 'nginx.conf generated!';
+  }
+  catch(err) {
+    printError(err);
+    result = '!!! nginx.conf wasn\'t generated!';
+  }
+
+  return result;
 }
 
 module.exports = createNginxConfig;
