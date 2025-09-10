@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const {
   postUserService,
   getUserService,
-  getUserByCredService,
+  getUserByUsernameOrEmailService
 } = require("../services/usersService");
 
 const signInController = async (req, res) => {
@@ -19,8 +19,8 @@ const signInController = async (req, res) => {
   }
 
   try {
-    const usercreds = { usernameOrEmail };
-    const result = await getUserService(usercreds);
+    const usercreds = usernameOrEmail;
+    const result = await getUserByUsernameOrEmailService(usercreds);
 
     if (result) {
       const { username, email, id } = result;
@@ -62,7 +62,7 @@ const signInController = async (req, res) => {
       return;
     }
   } catch (err) {
-    return res.json({ message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 
@@ -117,7 +117,7 @@ const signUpController = async (req, res) => {
       });
     }
   } catch (err) {
-    res.json({ error: true, message: err.message });
+    return res.status(500).json({ message: err.message });
   }
 };
 

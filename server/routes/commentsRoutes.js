@@ -1,10 +1,11 @@
-const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const {
+  getPosts,
   getComments,
-  getComment,
+  getCommentWithReplies,
+  getRandomCommentWithReplies,
   postComment,
 } = require("../controllers/commentsController");
 const fileProcessingMiddleware = require("../middleware/fileProcessingMiddleware");
@@ -30,8 +31,8 @@ const upload = multer({
 
 router
   .get("/", getComments)
-  .get("/random", getComment)
-  .get("/:commentId", getComment)
+  .get("/random", getRandomCommentWithReplies)
+  .get("/:commentId", getCommentWithReplies)
   .post(
     "/",
     authMiddleware,

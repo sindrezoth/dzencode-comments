@@ -50,7 +50,7 @@ const CommentsTable = () => {
   useEffect(() => {
     async function getAll() {
       try {
-        const res = await axios.get("/api/comments?withReplyTo=0");
+        const res = await axios.get("/api/comments");
         if (res.data) {
           setComments(res.data);
           setPage({

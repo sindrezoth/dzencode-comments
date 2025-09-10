@@ -1,6 +1,11 @@
-const { fileTypeFromBuffer } = require("file-type");
 const sharp = require("sharp");
 const { countGifFrames, resizeGifBuffer } = require("../helpers/gifHelpers.js");
+
+// for jest testing, cause file-type have only ESM export
+async function getFileType(buffer) {
+  const { fileTypeFromBuffer } = await import("file-type");
+  return fileTypeFromBuffer(buffer);
+}
 
 const MAX_IMAGE_WIDTH = 320;
 const MAX_IMAGE_HEIGHT = 240;
@@ -9,7 +14,7 @@ const MAX_GIF_FRAMES_COUNT = 100;
 const fileProcessingMiddleware = async (req, res, next) => {
   if (req.file) {
     const file = req.file;
-    const ft = await fileTypeFromBuffer(file.buffer);
+    const ft = await getFileType(file.buffer);
     let ext = "txt";
     let mime = "text/plain";
     if (ft) {

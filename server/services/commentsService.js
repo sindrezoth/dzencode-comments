@@ -1,23 +1,63 @@
 const db = require("../db/dbConn");
 
-const getCommentsService = async (commentIds, withReplyTo) => {
-  let query = `SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.attached_file_path as attachedFilePath, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c 
+const getPostsService = async (commentIds) => {
+  let query = `SELECT
+c.id as commentId,
+c.text as text,
+u.username as username,
+u.email as email,
+c.attached_file_path as attachedFilePath,
+c.created_at as createdAt,
+c.updated_at as updatedAt
+FROM comments c
 JOIN users u ON u.id = c.user_id`;
+
   if (commentIds && commentIds.length) {
     query += ` AND c.id IN (${commentIds.map((id) => `${id}`).join(", ")})`;
   }
 
-  if (withReplyTo !== undefined) {
-    query += ` WHERE c.reply_to IS ${withReplyTo ? "NOT " : ""}NULL`;
-  }
+  query += " WHERE c.reply_to IS NULL";
 
   const [rows] = await db.query(query + ";");
 
   return rows;
 };
 
+const getCommentsService = async (commentIds) => {
+  let query = `SELECT
+c.id as commentId,
+c.text as text,
+u.username as username,
+u.email as email,
+c.attached_file_path as attachedFilePath,
+c.created_at as createdAt,
+c.updated_at as updatedAt
+FROM comments c
+JOIN users u ON u.id = c.user_id`;
+
+  if (commentIds && commentIds.length) {
+    query += ` AND c.id IN (${commentIds.map((id) => `${id}`).join(", ")})`;
+  }
+
+  try {
+    const [rows] = await db.query(query + ";");
+    return rows;
+  } catch (err) {
+    console.log(err);
+    throw new Error(err);
+  }
+};
+
 const getCommentsOfUserService = async (userId) => {
-  let query = `SELECT c.id as commentId, c.text as text, u.username as username, u.email as email, c.attached_file_path as attachedFilePath, c.created_at as createdAt, c.updated_at as updatedAt FROM comments c 
+  let query = `SELECT
+c.id as commentId,
+c.text as text,
+u.username as username,
+u.email as email,
+c.attached_file_path as attachedFilePath,
+c.created_at as createdAt,
+c.updated_at as updatedAt
+FROM comments c
 JOIN users u ON u.id = c.user_id
 WHERE u.id = ${userId}`;
 
@@ -27,24 +67,37 @@ WHERE u.id = ${userId}`;
 };
 
 const getCommentService = async (commentId) => {
-  let query = `SELECT 
-u.id as userId, 
-u.username as username, 
-c.id as commentId, 
-c.text as text, 
-c.reply_to as replyTo, 
+  let query = `SELECT
+u.id as userId,
+u.username as username,
+c.id as commentId,
+c.text as text,
+c.reply_to as replyTo,
 c.attached_file_path as attachedFilePath,
-c.created_at as createdAt, 
+c.created_at as createdAt,
 c.updated_at as updatedAt
-FROM comments c 
+FROM comments c
 JOIN users u ON u.id = c.user_id
-`;
+WHERE c.id = ${commentId}`;
 
-  if (commentId) {
-    query += ` WHERE c.id = ${commentId}`;
-  } else {
-    query += " ORDER BY RAND() LIMIT 1";
-  }
+  const [rows] = await db.query(query);
+
+  return rows[0];
+};
+
+const getRandomCommentService = async () => {
+  let query = `SELECT 
+u.id as userId,
+u.username as username,
+c.id as commentId,
+c.text as text,
+c.reply_to as replyTo,
+c.attached_file_path as attachedFilePath,
+c.created_at as createdAt,
+c.updated_at as updatedAt
+FROM comments c
+JOIN users u ON u.id = c.user_id
+ORDER BY RAND() LIMIT 1`;
 
   const [rows] = await db.query(query);
 
@@ -52,28 +105,18 @@ JOIN users u ON u.id = c.user_id
 };
 
 const getCommentReplysService = async (commentId) => {
-  let query = `SELECT 
-u.id as userId, 
-u.username as username, 
-c.id as commentId, 
-c.text as text, 
-c.reply_to as replyTo, 
+  let query = `SELECT
+u.id as userId,
+u.username as username,
+c.id as commentId,
+c.text as text,
+c.reply_to as replyTo,
 c.attached_file_path as attachedFilePath,
-c.created_at as createdAt, 
+c.created_at as createdAt,
 c.updated_at as updatedAt
-FROM comments c 
+FROM comments c
 JOIN users u ON u.id = c.user_id
-`;
-
-  if (commentId) {
-    query += ` WHERE c.reply_to = ${commentId}`;
-  } else {
-    const [rows] = await db.query(
-      "SELECT c.id as commentId FROM comments ORDER BY RAND() LIMIT 1",
-    );
-    console.log(rows[0].commentId);
-    query += ` WHERE c.reply_to = ${rows[0].commentId}`;
-  }
+WHERE c.reply_to = ${commentId}`;
 
   const [rows] = await db.query(query);
 
@@ -82,11 +125,11 @@ JOIN users u ON u.id = c.user_id
 
 const postCommentService = async ({ userId, comment, filePath, replyTo }) => {
   let result;
-  const query = `INSERT INTO comments (user_id, text, reply_to, attached_file_path) 
+  const query = `INSERT INTO comments (user_id, text, reply_to, attached_file_path)
 VALUES (
-${userId}, 
-'${comment.replaceAll("'", "''")}', 
-${replyTo ? `${replyTo}` : "NULL"}, 
+${userId},
+'${comment.replaceAll("'", "''")}',
+${replyTo ? `${replyTo}` : "NULL"},
 ${filePath ? `'${filePath}'` : "NULL"}
 );`;
 
@@ -122,8 +165,10 @@ ${attachedFilePath ? `'${attachedFilePath}'` : "NULL"}
 };
 
 module.exports = {
+  getPostsService,
   getCommentsService,
   getCommentService,
+  getRandomCommentService,
   getCommentReplysService,
   getCommentsOfUserService,
   postCommentService,

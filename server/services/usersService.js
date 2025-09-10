@@ -1,26 +1,16 @@
-// import { FieldPacket, ResultSetHeader, RowDataPacket } from "mysql2";
 const db = require("../db/dbConn");
 
-const toDBfields = {
-  id: "id",
-  username: "username",
-  email: "email",
-  homepage: "homepage",
-  createdAt: "created_at",
-  updatedAt: "updated_at",
-};
+const getUsersService = async (userIds) => {
+  let query = `SELECT
+u.id as id,
+u.username as username,
+u.email as email,
+u.homepage as homepage,
+u.created_at as createAt,
+u.updated_at as updateAt
+FROM users u`;
 
-const getUsersService = async (
-  userIds,
-  fields = ["id", "username", "email", "homepage", "createAt", "updateAt"],
-) => {
-  const fieldsQuery = fields
-    .map((f) => `u.${toDBfields[f]} as ${f}`)
-    .join(", ");
-
-  let query = `SELECT ${fieldsQuery} FROM users u`;
-
-  if (userIds && userIds.length) {
+  if (userIds && Array.isArray(userIds) && userIds.length) {
     query += ` WHERE u.id IN (${userIds.map((id) => id).join(", ")})`;
   }
 
@@ -29,34 +19,46 @@ const getUsersService = async (
   return rows;
 };
 
-const getUserService = async (
-  user,
-  fields = ["id", "username", "email", "homepage", "createdAt", "updatedAt"],
-) => {
-  const { userId, username, email, usernameOrEmail } = user;
-  const fieldsQuery = fields
-    .map((f) => `u.${toDBfields[f]} as ${f}`)
-    .join(", ");
-
-  let query = `SELECT ${fieldsQuery} FROM users u`;
-
-  query += ` WHERE u.id = '${userId}' OR u.username = '${username}' OR u.email = '${email}' OR u.username = '${usernameOrEmail}' OR u.email= '${usernameOrEmail}'`;
-
+const getUserService = async (userId) => {
+  let query = `SELECT
+u.id as id,
+u.username as username,
+u.email as email,
+u.homepage as homepage,
+u.created_at as createAt,
+u.updated_at as updateAt
+FROM users u
+WHERE u.id = '${userId};`;
   const [rows] = await db.query(query);
 
   return rows[0];
 };
 
-const getRandomUserService = async (
-  fields = ["id", "username", "email", "homepage", "createdAt", "updatedAt"],
-) => {
-  const fieldsQuery = fields
-    .map((f) => `u.${toDBfields[f]} as ${f}`)
-    .join(", ");
+const getUserByUsernameOrEmailService = async (usernameOrEmail) => {
+  let query = `SELECT
+u.id as id,
+u.username as username,
+u.email as email,
+u.homepage as homepage,
+u.created_at as createAt,
+u.updated_at as updateAt
+FROM users u
+WHERE u.username = '${usernameOrEmail}' OR u.email = '${usernameOrEmail}';`;
+  const [rows] = await db.query(query);
 
-  let query = `SELECT ${fieldsQuery} FROM users u`;
+  return rows[0];
+};
 
-  query += ` ORDER BY RAND() LIMIT 1`;
+const getRandomUserService = async () => {
+  let query = `SELECT
+u.id as id,
+u.username as username,
+u.email as email,
+u.homepage as homepage,
+u.created_at as createAt,
+u.updated_at as updateAt
+FROM users u
+ORDER BY RAND() LIMIT 1;`;
 
   const [rows] = await db.query(query);
 
@@ -64,29 +66,39 @@ const getRandomUserService = async (
 };
 
 const postUserService = async (user) => {
-  const res = await db.query(
-    `INSERT INTO users (username, email, homepage) VALUES ('${user.username}', '${user.email}', '${user.homepage || "NULL"}')`,
-  );
-  const result = res[0];
+  let query = `INSERT INTO users (
+username,
+email,
+homepage)
+VALUES (
+'${user.username}',
+'${user.email}',
+'${user.homepage || "NULL"}'
+);`;
 
-  return result;
+  const [rows] = await db.query(query);
+
+  return rows[0];
 };
 
 const addUsers = async (users) => {
-  let query = `
-INSERT IGNORE INTO users (username, email, homepage) 
+  let query = `INSERT IGNORE INTO users (
+username,
+emil,
+homepage)
 VALUES`;
 
   for (const { username, email, homepage } of users) {
     query += ` (
-'${username}', 
-'${email}', 
+'${username}',
+'${email}',
 '${homepage || "NULL"}'
 ),`;
   }
 
+  query = query.slice(0, -1);
+
   try {
-    query = query.slice(0, -1);
     const result = await db.query(query);
     return result;
   } catch (err) {
@@ -98,6 +110,7 @@ VALUES`;
 module.exports = {
   getUsersService,
   getUserService,
+  getUserByUsernameOrEmailService,
   postUserService,
   getRandomUserService,
   addUsers,

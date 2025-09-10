@@ -30,6 +30,7 @@ const SignIn = ({ closeHandle, signToggle }) => {
       setAccessToken(accessToken);
       setUsernameOrEmail("");
       closeHandle();
+      setFetchState({ isLoading: false, error: null });
     }
   }
 
